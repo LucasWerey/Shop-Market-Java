@@ -1,0 +1,302 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
+ */
+package View;
+
+import Controller.*;
+import javax.swing.ImageIcon;
+import Model.ConnectionDataBase;
+import java.awt.Cursor;
+import java.awt.Image;
+import java.io.File;
+import static java.lang.Thread.sleep;
+import java.util.ArrayList;
+import java.util.Random;
+import static javax.management.Query.gt;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.table.AbstractTableModel;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumn;
+
+/**
+ *
+ * @author cleme
+ */
+public class TabEmployeeFrame extends javax.swing.JFrame {
+
+    private ProjetJava projet;
+    private EmployeeFrame previous;
+    private char type_dmd;
+    private int idVendeur;
+    private WelcomeFrame welcomeFrame;
+
+    /**
+     * Creates new form TabEmployeeFrame
+     */
+    public TabEmployeeFrame() {
+        initComponents();
+    }
+
+    public TabEmployeeFrame(ProjetJava projet, WelcomeFrame welcomeFrame, EmployeeFrame previous, int IdVendeur, char type_dmd) {
+        initComponents();
+        this.projet = projet;
+        this.previous = previous;
+        this.welcomeFrame = welcomeFrame;
+        this.idVendeur = IdVendeur;
+        this.type_dmd = type_dmd;
+
+        ImageIcon fond = new ImageIcon("Fond.png");
+        Fond.setIcon(fond);
+        EmpPanel.setVisible(false);
+        ImageIcon ret = new ImageIcon("Retour.png");
+        RtnBtn.setIcon(ret);
+
+        DefaultTableModel dm = (DefaultTableModel) TableEmp.getModel();
+        dm.getDataVector().removeAllElements();
+        dm.fireTableDataChanged();
+
+        if (type_dmd == 'e') {
+
+            //voir les employés
+            EmpPanel.setVisible(true);
+
+            // Update la table
+            for (int i = 0; i < projet.getVendeurs().size(); i++) {
+                String id = String.valueOf(projet.getVendeurs().get(i).getId());
+                String prenom = String.valueOf(projet.getVendeurs().get(i).getPrenom());
+                String nom = String.valueOf(projet.getVendeurs().get(i).getNom());
+                String mail = String.valueOf(projet.getVendeurs().get(i).getMail());
+                String mdp = String.valueOf(projet.getVendeurs().get(i).getMdp());
+
+                String Table1[] = {id, prenom, nom, mail, mdp};
+                DefaultTableModel Tblmodel = (DefaultTableModel) TableEmp.getModel();
+                Tblmodel.addRow(Table1);
+            }
+
+        } else if (type_dmd == 'b') {
+            //voir les acheteurs
+            EmpPanel.setVisible(true);
+            ChangeName(TableEmp, 0, "ID");
+            ChangeName(TableEmp, 4, "Guest or member");
+
+            for (int i = 0; i < projet.getAcheteurs().size(); i++) {
+                String id = String.valueOf(projet.getAcheteurs().get(i).getId());
+                String prenom = String.valueOf(projet.getAcheteurs().get(i).getPrenom());
+                String nom = String.valueOf(projet.getAcheteurs().get(i).getNom());
+                String mail = String.valueOf(projet.getAcheteurs().get(i).getMail());
+                String typ = String.valueOf(projet.getAcheteurs().get(i).getType());
+
+                String Table1[] = {id, prenom, nom, mail, typ};
+                DefaultTableModel Tblmodel = (DefaultTableModel) TableEmp.getModel();
+                Tblmodel.addRow(Table1);
+            }
+
+        } else if (type_dmd == 'o') {
+            //voir les commandes
+            ChangeName(TableEmp, 1, "Order number");
+            ChangeName(TableEmp, 2, "Id customer");
+            ChangeName(TableEmp, 3, "Id employee");
+            Remove(TableEmp, 0);
+            Remove(TableEmp, 3);
+
+            EmpPanel.setVisible(true);
+            DeleteButton.setVisible(false);
+
+            for (int i = 0; i < projet.getCommandes().size(); i++) {
+                if (projet.getCommandes().get(i).getVendeur() == idVendeur) {
+
+                    String kk = " ";
+                    String num_order = String.valueOf(projet.getCommandes().get(i).getNumCmd());
+                    String id_cust = String.valueOf(projet.getCommandes().get(i).getAcheteur());
+                    String id_V = String.valueOf(projet.getCommandes().get(i).getVendeur());
+                    /*String.valueOf(idVendeur);*/
+
+                    String Table1[] = {kk, num_order, id_cust, id_V};
+                    DefaultTableModel Tblmodel = (DefaultTableModel) TableEmp.getModel();
+                    Tblmodel.addRow(Table1);
+                }
+            }
+        }
+    }
+
+    /**
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
+     */
+    @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    private void initComponents() {
+
+        EmpPanel = new javax.swing.JPanel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        TableEmp = new javax.swing.JTable();
+        DeleteButton = new javax.swing.JButton();
+        RtnBtn = new javax.swing.JButton();
+        Fond = new javax.swing.JLabel();
+
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        getContentPane().setLayout(null);
+
+        EmpPanel.setBackground(new java.awt.Color(207, 199, 216));
+        EmpPanel.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        EmpPanel.setLayout(null);
+
+        TableEmp.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Id_Employee", "First Name", "Last Name", "Mail", "Password"
+            }
+        ));
+        jScrollPane1.setViewportView(TableEmp);
+
+        EmpPanel.add(jScrollPane1);
+        jScrollPane1.setBounds(14, 32, 852, 289);
+
+        DeleteButton.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        DeleteButton.setText("DELETE");
+        DeleteButton.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        DeleteButton.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        DeleteButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                DeleteButtonActionPerformed(evt);
+            }
+        });
+        EmpPanel.add(DeleteButton);
+        DeleteButton.setBounds(777, 378, 89, 37);
+
+        getContentPane().add(EmpPanel);
+        EmpPanel.setBounds(170, 70, 880, 430);
+
+        RtnBtn.setBackground(new java.awt.Color(207, 199, 216));
+        RtnBtn.setIcon(new javax.swing.ImageIcon("C:\\Users\\lucas\\Documents\\NetBeansProjects\\Projet Java v.lulu\\Projet Java\\Projet Java\\Retour.png")); // NOI18N
+        RtnBtn.setBorder(null);
+        RtnBtn.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        RtnBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                RtnBtnActionPerformed(evt);
+            }
+        });
+        getContentPane().add(RtnBtn);
+        RtnBtn.setBounds(30, 530, 50, 50);
+        getContentPane().add(Fond);
+        Fond.setBounds(0, 0, 1200, 660);
+
+        pack();
+    }// </editor-fold>//GEN-END:initComponents
+
+    private void RtnBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RtnBtnActionPerformed
+
+        EmployeeFrame back = new EmployeeFrame(this, welcomeFrame, projet);
+        welcomeFrame.fullScreen(back, this);
+    }//GEN-LAST:event_RtnBtnActionPerformed
+
+    private void DeleteButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DeleteButtonActionPerformed
+        int number = TableEmp.getSelectedRow();
+        int id1 = Integer.parseInt(TableEmp.getValueAt(number, 0).toString());
+        //int Id = Integer.parseInt(p_Id.getText());
+
+        if (type_dmd == 'e') {
+            System.out.println(number);
+            projet.deleteVendeurs(projet.searchVendeur(id1));
+            System.out.println("delete successfull");
+
+            DefaultTableModel dm = (DefaultTableModel) TableEmp.getModel();
+            dm.getDataVector().removeAllElements();
+            dm.fireTableDataChanged();
+
+            // Update la table
+            for (int i = 0; i < projet.getVendeurs().size(); i++) {
+                String id = String.valueOf(projet.getVendeurs().get(i).getId());
+                String prenom = String.valueOf(projet.getVendeurs().get(i).getPrenom());
+                String nom = String.valueOf(projet.getVendeurs().get(i).getNom());
+                String mail = String.valueOf(projet.getVendeurs().get(i).getMail());
+                String mdp = String.valueOf(projet.getVendeurs().get(i).getMdp());
+                String Table1[] = {id, prenom, nom, mail, mdp};
+                DefaultTableModel Tblmodel = (DefaultTableModel) TableEmp.getModel();
+                Tblmodel.addRow(Table1);
+            }
+
+        } else if (type_dmd == 'b') {
+            projet.deleteAch(projet.searchAch(id1));
+            System.out.println("delete successfull");
+            DefaultTableModel dm = (DefaultTableModel) TableEmp.getModel();
+            dm.getDataVector().removeAllElements();
+            dm.fireTableDataChanged();
+
+            // Update la table
+            for (int i = 0; i < projet.getAcheteurs().size(); i++) {
+                String id = String.valueOf(projet.getAcheteurs().get(i).getId());
+                String prenom = String.valueOf(projet.getAcheteurs().get(i).getPrenom());
+                String nom = String.valueOf(projet.getAcheteurs().get(i).getNom());
+                String mail = String.valueOf(projet.getAcheteurs().get(i).getMail());
+                String typ = String.valueOf(projet.getAcheteurs().get(i).getType());
+
+                String Table1[] = {id, prenom, nom, mail, typ};
+                DefaultTableModel Tblmodel = (DefaultTableModel) TableEmp.getModel();
+                Tblmodel.addRow(Table1);
+            }
+        }
+
+    }//GEN-LAST:event_DeleteButtonActionPerformed
+
+    public void ChangeName(JTable table, int col_index, String col_name) {
+        table.getColumnModel().getColumn(col_index).setHeaderValue(col_name);
+    }
+
+    public void Remove(JTable table, int col_index) {
+        TableColumn tcol = table.getColumnModel().getColumn(col_index);
+        table.removeColumn(tcol);
+    }
+
+    /**
+     * @param args the command line arguments
+     */
+    public static void main(String args[]) {
+        /* Set the Nimbus look and feel */
+        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         */
+        try {
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (ClassNotFoundException ex) {
+            java.util.logging.Logger.getLogger(TabEmployeeFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (InstantiationException ex) {
+            java.util.logging.Logger.getLogger(TabEmployeeFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            java.util.logging.Logger.getLogger(TabEmployeeFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(TabEmployeeFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
+        //</editor-fold>
+
+        /* Create and display the form */
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                new TabEmployeeFrame().setVisible(true);
+            }
+        });
+    }
+
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton DeleteButton;
+    private javax.swing.JPanel EmpPanel;
+    private javax.swing.JLabel Fond;
+    private javax.swing.JButton RtnBtn;
+    private javax.swing.JTable TableEmp;
+    private javax.swing.JScrollPane jScrollPane1;
+    // End of variables declaration//GEN-END:variables
+}
